@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.3/d3.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  
+<style id="jsbin-css">
+.axis .domain {
+  display: none;
+}
+
+div.static {
+    position: static;
+    border: 3px solid #73AD21;
+}
+</style>
+</head>
+<body>
+  
+  <div id="myDivMap" name="myDivMap" title="Div Map Element">
+    <iframe width="620" height="780" frameborder="0" src="https://nyu.carto.com/u/roshansridhar/builder/43f0ea12-8077-4cf5-8781-d99676560bc3/embed" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
+  </div>
+  
+  <h3 id="main-heading" style="font-family:verdana;">NYC Motor Vehicle Collisions Explorer</h3>
+  
+<div id="chart">
+  <svg id="legend" width="750" height="770"> 
+  </svg>
+</div>
+  
+  <select id="inds" onchange="report(this.value)">
+		<option value="none" selected="selected">None</option>
+    <option value="m_inj">Motorists Injured</option>
+		<option value="m_dead">Motorists Fatalaties</option>
+		<option value="p_inj">Pedestrians Injured</option>
+    <option value="p_dead">Pedestrians Fatalities</option>
+		<option value="c_inj">Cyclists Injured</option>
+		<option value="c_dead">Cyclist Fatalities</option>
+  </select>
+  
+    <select id="facs" onchange="report3(this.value)">
+		<option value="none" selected="selected">None</option>
+    <option value="o1">Driver Inattention/Distraction</option>
+		<option value="o2">Failure to Yield Right-of-Way</option>
+		<option value="o3">Fatigued/Drowsy</option>
+    <option value="o4">Backing Unsafely</option>
+		<option value="o5">Other Vehicular</option>
+		<option value="o6">Following Too Closely</option>
+    <option value="o7">Turning Improperly</option>
+		<option value="o8">Lost Consciousness</option>
+    <option value="o09">Passing or Lane Usage Improper</option>
+    <option value="o10">Traffic Control Disregarded</option>		
+    <option value="o11">Driver Inexperience</option>
+		<option value="o12">Prescription Medication</option>
+    <option value="o13">Unsafe Lane Changing</option>
+		<option value="o14">Pavement Slippery</option>
+		<option value="o15">Outside Car Distraction</option>
+    <option value="o16">Alcohol Involvement</option>
+		<option value="o17">Physical Disability</option>
+		<option value="o18">Oversized Vehicle</option>
+    <option value="o19">Reaction to Other Uninvolved Vehicle</option>
+    <option value="o20">Unsafe Speed</option>
+  </select>
+  
+<!-- <div id="showAll">
+  <input name="showAllButton"
+   type="button"
+   value="Show All"
+   onclick="showAll()" />
+</div>
+<div id="clearAll">
+  <input name="clearAllButton"
+   type="button"
+   value="Clear All"
+   onclick="clearAll()" />
+</div> -->
+  
+<script id="jsbin-javascript">
+//NEW
+function placeObj(id, x_pos, y_pos) {
+  var d = document.getElementById(id);
+  d.style.position = "absolute";
+  d.style.left = x_pos+'px';
+  d.style.top = y_pos+'px';
+}
+
+
+placeObj('myDivMap', 750,  20); //NEW
+placeObj(    'inds',  10, 302); //NEW
+placeObj(    'facs',  10, 562); //NEW
+// placeObj( 'showAll', 170, 290); //NEW
+// placeObj('clearAll', 240, 290); //NEW
+placeObj(  'legend',   0,  40); //NEW
+
+var svg = d3.select("svg"),
+    margin = {top: 30, right: 20, bottom: 30, left: 30}, //NEW
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height")/3.2 - margin.top - margin.bottom,
+    g1 = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")"),
+    g2 = svg.append("g").attr("id", "vis2").attr("transform", "translate(" + margin.left + "," + (280+margin.top) + ")"),
+    g3 = svg.append("g").attr("id", "vis3").attr("transform", "translate(" + margin.left + "," + (540+margin.top) + ")");
+
+var x0 = d3.scaleBand()
+    .rangeRound([0, width])
+    .paddingInner(0.1);
+
+var x1 = d3.scaleBand()
+    .padding(0.05);
+
+var y = d3.scaleLinear()
+    .rangeRound([height, 0]);
+
+var z3 = d3.scaleOrdinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+var z2 = d3.scaleOrdinal()
+    .range(["#C28142", "#C4AC44", "#44833C", "#47933D", "#4AA43F", "#BD4052", "#C05640"]);
+var z = d3.scaleOrdinal()
+    .range(["#7e3961", "#8e3b6b", "#9f3d75", "#3e88b8", "#3e62bb", "#423ebf", "#6d3ec2"]);
+
+function dispViz(g_var, url, vtitle, color_sc){
+  
+    g_var.append("text")
+    .attr("x", 0)
+    .attr("y", -10)
+//     .attr("dy", ".35em")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "14px")
+    .text(vtitle);
+  
+d3.csv(url, function(d, i, columns) {
+  for (var i = 1, n = columns.length; i < n; ++i) d[columns[i]] = +d[columns[i]];
+  return d;
+}, function(error, data) {
+  if (error) throw error;
+
+  var keys = data.columns.slice(1);
+
+  x0.domain(data.map(function(d) { return d.BOROUGH; }));
+  x1.domain(keys).rangeRound([0, x0.bandwidth()]);
+  y.domain([0, d3.max(data, function(d) { return d3.max(keys, function(key) { return d[key]; }); })]).nice();
+
+
+    g_var.append("g")
+      .selectAll("g")
+      .data(data)
+      .enter().append("g")
+        .attr("transform", function(d) { return "translate(" + x0(d.BOROUGH) + ",0)"; })
+      .selectAll("rect")
+      .data(function(d) { return keys.map(function(key) { return {key: key, value: d[key]}; }); })
+      .enter().append("rect")
+        .attr("x", function(d) { return x1(d.key); })
+        .attr("y", function(d) { return y(d.value); })
+        .attr("width", x1.bandwidth()).transition().delay(250).duration(1000)
+        .attr("height", function(d) { return height - y(d.value); })
+        .attr("fill", function(d) { return color_sc(d.key); });
+
+    g_var.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x0));
+
+    g_var.append("g")
+        .attr("class", "axis")
+        .call(d3.axisLeft(y).ticks(null, "s"))
+      .append("text")
+        .attr("x", 2)
+        .attr("y", y(y.ticks().pop()) + 0.5)
+        .attr("dy", "0.32em")
+        .attr("fill", "#000")
+        .attr("font-weight", "bold")
+        .attr("text-anchor", "start")
+        .text("Population");
+
+    var legend = g_var.append("g")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 10)
+        .attr("text-anchor", "end")
+      .selectAll("g")
+      .data(keys.slice().reverse())
+      .enter().append("g")
+        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+    legend.append("rect")
+        .attr("x", width - 19)
+        .attr("width", 19)
+        .attr("height", 19)
+        .attr("fill", color_sc);
+
+    legend.append("text")
+        .attr("x", width - 24)
+        .attr("y", 9.5)
+        .attr("dy", "0.32em")
+        .text(function(d) { return d; });
+
+    });
+  }  
+
+function getSelectedText(elementId) 
+{
+  var elt = document.getElementById(elementId);      
+  if (elt.selectedIndex == -1)         
+    return null;      
+  return elt.options[elt.selectedIndex].text; 
+}  
+
+
+
+
+viz1_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz_block_1_pivot.csv"
+viz1_title = "Total accidents per year for each borough:"
+dispViz(g1, viz1_url, viz1_title, z);
+
+
+// viz2_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz2_mode_pivot_NUMBER%20OF%20CYCLIST%20INJURED.csv";
+// viz2_title = "Number of Cyclists Injured per year for each borough:"
+// dispViz(g2, viz2_url, viz2_title, z2);
+
+// viz3_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Alcohol%20Involvement.csv";
+// viz3_title = "Total accidents due to Alcohol Involvement per year for each borough:"
+// dispViz(g3, viz3_url, viz3_title, z3);
+
+// dispViz(g2, viz2_url, viz1_title);
+//switching function
+function report(v) {
+  var text = getSelectedText('inds');
+  viz_title = "Number of "+text+" per year for each borough:"
+  var el = document.getElementById("vis2");
+  while (el.firstChild) {
+      el.removeChild(el.firstChild);
+  }
+  
+//To Do
+  switch(v) {
+    case "m_inj":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz2_mode_pivot_NUMBER%20OF%20MOTORIST%20INJURED.csv";
+      dispViz(g2, viz_url, viz_title, z2);
+      
+      break;
+    case "m_dead":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz2_mode_pivot_NUMBER%20OF%20MOTORIST%20KILLED.csv";
+      dispViz(g2, viz_url, viz_title, z2);
+      
+      break;
+    case "p_inj":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz2_mode_pivot_NUMBER%20OF%20PEDESTRIANS%20INJURED.csv";
+      dispViz(g2, viz_url, viz_title, z2);
+      
+      break;
+    case "p_dead":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz2_mode_pivot_NUMBER%20OF%20PEDESTRIANS%20KILLED.csv";
+      dispViz(g2, viz_url, viz_title, z2);
+      
+      break;
+    case "c_inj":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz2_mode_pivot_NUMBER%20OF%20CYCLIST%20INJURED.csv";
+      dispViz(g2, viz_url, viz_title, z2);
+      
+      break;
+    case "c_dead":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz2_mode_pivot_NUMBER%20OF%20CYCLIST%20KILLED.csv";
+      dispViz(g2, viz_url, viz_title, z2);
+      
+      break;
+      
+  }
+}
+
+
+function report3(v) {
+  var text = getSelectedText('facs');
+  viz_title = "Number of Accidents due to "+text+" per year for each borough:"
+  var el = document.getElementById("vis3");
+  while (el.firstChild) {
+      el.removeChild(el.firstChild);
+  }
+  
+//To Do
+  switch(v) {
+      
+    case "o1":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Driver%20Inattention--Distraction.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o2":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Failure%20to%20Yield%20Right-of-Way.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o3":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Fatigued--Drowsy.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o4":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Backing%20Unsafely.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o5":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Other%20Vehicular.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o6":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Following%20Too%20Closely.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o7":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Turning%20Improperly.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o8":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Lost%20Consciousness.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o9":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Passing%20or%20Lane%20Usage%20Improper.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o10":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Traffic%20Control%20Disregarded.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o11":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Driver%20Inexperience.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o12":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Prescription%20Medication.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o13":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Unsafe%20Lane%20Changing.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o14":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Pavement%20Slippery.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o15":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Outside%20Car%20Distraction.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o16":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Alcohol%20Involvement.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o17":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Physical%20Disability.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o18":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Oversized%20Vehicle.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o19":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Reaction%20to%20Other%20Uninvolved%20Vehicle.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o20":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Unsafe%20Speed.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+
+      
+  }
+}
+</script>
+
+
+<script id="jsbin-source-css" type="text/css">.axis .domain {
+  display: none;
+}
+
+div.static {
+    position: static;
+    border: 3px solid #73AD21;
+}</script>
+
+<script id="jsbin-source-javascript" type="text/javascript">//NEW
+function placeObj(id, x_pos, y_pos) {
+  var d = document.getElementById(id);
+  d.style.position = "absolute";
+  d.style.left = x_pos+'px';
+  d.style.top = y_pos+'px';
+}
+
+
+placeObj('myDivMap', 750,  20); //NEW
+placeObj(    'inds',  10, 302); //NEW
+placeObj(    'facs',  10, 562); //NEW
+// placeObj( 'showAll', 170, 290); //NEW
+// placeObj('clearAll', 240, 290); //NEW
+placeObj(  'legend',   0,  40); //NEW
+
+var svg = d3.select("svg"),
+    margin = {top: 30, right: 20, bottom: 30, left: 30}, //NEW
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height")/3.2 - margin.top - margin.bottom,
+    g1 = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")"),
+    g2 = svg.append("g").attr("id", "vis2").attr("transform", "translate(" + margin.left + "," + (280+margin.top) + ")"),
+    g3 = svg.append("g").attr("id", "vis3").attr("transform", "translate(" + margin.left + "," + (540+margin.top) + ")");
+
+var x0 = d3.scaleBand()
+    .rangeRound([0, width])
+    .paddingInner(0.1);
+
+var x1 = d3.scaleBand()
+    .padding(0.05);
+
+var y = d3.scaleLinear()
+    .rangeRound([height, 0]);
+
+var z3 = d3.scaleOrdinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+var z2 = d3.scaleOrdinal()
+    .range(["#C28142", "#C4AC44", "#44833C", "#47933D", "#4AA43F", "#BD4052", "#C05640"]);
+var z = d3.scaleOrdinal()
+    .range(["#7e3961", "#8e3b6b", "#9f3d75", "#3e88b8", "#3e62bb", "#423ebf", "#6d3ec2"]);
+
+function dispViz(g_var, url, vtitle, color_sc){
+  
+    g_var.append("text")
+    .attr("x", 0)
+    .attr("y", -10)
+//     .attr("dy", ".35em")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "14px")
+    .text(vtitle);
+  
+d3.csv(url, function(d, i, columns) {
+  for (var i = 1, n = columns.length; i < n; ++i) d[columns[i]] = +d[columns[i]];
+  return d;
+}, function(error, data) {
+  if (error) throw error;
+
+  var keys = data.columns.slice(1);
+
+  x0.domain(data.map(function(d) { return d.BOROUGH; }));
+  x1.domain(keys).rangeRound([0, x0.bandwidth()]);
+  y.domain([0, d3.max(data, function(d) { return d3.max(keys, function(key) { return d[key]; }); })]).nice();
+
+
+    g_var.append("g")
+      .selectAll("g")
+      .data(data)
+      .enter().append("g")
+        .attr("transform", function(d) { return "translate(" + x0(d.BOROUGH) + ",0)"; })
+      .selectAll("rect")
+      .data(function(d) { return keys.map(function(key) { return {key: key, value: d[key]}; }); })
+      .enter().append("rect")
+        .attr("x", function(d) { return x1(d.key); })
+        .attr("y", function(d) { return y(d.value); })
+        .attr("width", x1.bandwidth()).transition().delay(250).duration(1000)
+        .attr("height", function(d) { return height - y(d.value); })
+        .attr("fill", function(d) { return color_sc(d.key); });
+
+    g_var.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x0));
+
+    g_var.append("g")
+        .attr("class", "axis")
+        .call(d3.axisLeft(y).ticks(null, "s"))
+      .append("text")
+        .attr("x", 2)
+        .attr("y", y(y.ticks().pop()) + 0.5)
+        .attr("dy", "0.32em")
+        .attr("fill", "#000")
+        .attr("font-weight", "bold")
+        .attr("text-anchor", "start")
+        .text("Population");
+
+    var legend = g_var.append("g")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 10)
+        .attr("text-anchor", "end")
+      .selectAll("g")
+      .data(keys.slice().reverse())
+      .enter().append("g")
+        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+    legend.append("rect")
+        .attr("x", width - 19)
+        .attr("width", 19)
+        .attr("height", 19)
+        .attr("fill", color_sc);
+
+    legend.append("text")
+        .attr("x", width - 24)
+        .attr("y", 9.5)
+        .attr("dy", "0.32em")
+        .text(function(d) { return d; });
+
+    });
+  }  
+
+function getSelectedText(elementId) 
+{
+  var elt = document.getElementById(elementId);      
+  if (elt.selectedIndex == -1)         
+    return null;      
+  return elt.options[elt.selectedIndex].text; 
+}  
+
+
+
+
+viz1_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz_block_1_pivot.csv"
+viz1_title = "Total accidents per year for each borough:"
+dispViz(g1, viz1_url, viz1_title, z);
+
+
+// viz2_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz2_mode_pivot_NUMBER%20OF%20CYCLIST%20INJURED.csv";
+// viz2_title = "Number of Cyclists Injured per year for each borough:"
+// dispViz(g2, viz2_url, viz2_title, z2);
+
+// viz3_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Alcohol%20Involvement.csv";
+// viz3_title = "Total accidents due to Alcohol Involvement per year for each borough:"
+// dispViz(g3, viz3_url, viz3_title, z3);
+
+// dispViz(g2, viz2_url, viz1_title);
+//switching function
+function report(v) {
+  var text = getSelectedText('inds');
+  viz_title = "Number of "+text+" per year for each borough:"
+  var el = document.getElementById("vis2");
+  while (el.firstChild) {
+      el.removeChild(el.firstChild);
+  }
+  
+//To Do
+  switch(v) {
+    case "m_inj":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz2_mode_pivot_NUMBER%20OF%20MOTORIST%20INJURED.csv";
+      dispViz(g2, viz_url, viz_title, z2);
+      
+      break;
+    case "m_dead":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz2_mode_pivot_NUMBER%20OF%20MOTORIST%20KILLED.csv";
+      dispViz(g2, viz_url, viz_title, z2);
+      
+      break;
+    case "p_inj":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz2_mode_pivot_NUMBER%20OF%20PEDESTRIANS%20INJURED.csv";
+      dispViz(g2, viz_url, viz_title, z2);
+      
+      break;
+    case "p_dead":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz2_mode_pivot_NUMBER%20OF%20PEDESTRIANS%20KILLED.csv";
+      dispViz(g2, viz_url, viz_title, z2);
+      
+      break;
+    case "c_inj":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz2_mode_pivot_NUMBER%20OF%20CYCLIST%20INJURED.csv";
+      dispViz(g2, viz_url, viz_title, z2);
+      
+      break;
+    case "c_dead":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz2_mode_pivot_NUMBER%20OF%20CYCLIST%20KILLED.csv";
+      dispViz(g2, viz_url, viz_title, z2);
+      
+      break;
+      
+  }
+}
+
+
+function report3(v) {
+  var text = getSelectedText('facs');
+  viz_title = "Number of ACcidents due to "+text+" per year for each borough:"
+  var el = document.getElementById("vis3");
+  while (el.firstChild) {
+      el.removeChild(el.firstChild);
+  }
+  
+//To Do
+  switch(v) {
+      
+    case "o1":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Driver%20Inattention--Distraction.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o2":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Failure%20to%20Yield%20Right-of-Way.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o3":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Fatigued--Drowsy.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o4":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Backing%20Unsafely.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o5":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Other%20Vehicular.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o6":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Following%20Too%20Closely.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o7":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Turning%20Improperly.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o8":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Lost%20Consciousness.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o9":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Passing%20or%20Lane%20Usage%20Improper.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o10":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Traffic%20Control%20Disregarded.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o11":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Driver%20Inexperience.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o12":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Prescription%20Medication.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o13":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Unsafe%20Lane%20Changing.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o14":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Pavement%20Slippery.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o15":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Outside%20Car%20Distraction.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o16":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Alcohol%20Involvement.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o17":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Physical%20Disability.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o18":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Oversized%20Vehicle.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o19":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Reaction%20to%20Other%20Uninvolved%20Vehicle.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+      
+    case "o20":
+      viz_url = "https://raw.githubusercontent.com/Ishmita910/Datasets/master/viz3_factor_pivot_Unsafe%20Speed.csv";
+      dispViz(g3, viz_url, viz_title, z3);      
+      break;
+
+      
+  }
+}
+</script></body>
+</html>

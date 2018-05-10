@@ -1,15 +1,15 @@
 # Vision-Zero-Explorer
-NYC traffic data
-Team Member 
-Alia m. Kasem 
-Ishmita Singh
-Roshan Sridhar
+### NYC traffic data
+**Team Members**  
+Alia m. Kasem  
+Ishmita Singh  
+Roshan Sridhar  
 
 
-Objectives of the projects including a brief context of the project, and what tasks you're aiming to solve using visualizations
+## Objectives of the projects including a brief context of the project, and what tasks you're aiming to solve using visualizations
 
-Introduction vision Zero 
-General history and outlines of Vision Zero
+### Introduction to Vision Zero 
+#### General history and outlines of Vision Zero
  
 Vision Zero was first implemented in Sweden in 1997, with a set goal to reach a transportation network with no fatalities or serious injuries with a main principle ‘Life and health can never be exchanged for other benefits within society’, which is to create and enforce safety, targeting on different modes such as Pedestrian, cyclist and vehicle. Furthermore, Vision Zero was adopted by a number of countries and cities with: such as Netherlands, United Kingdom and recent cities within the United State such as Boston, San Francisco, California and finally New York City. 
 In 2014, Mayor de Blasio released a New York City Vision Zero Action plan, a 63 steps-disciplined approach to achieve the goals of Vision Zero. The goals are to reduce the numbers of traffic eliminates within fatalities by combining three main characteristics elements to assure safety:  process and development enforcement, education and engineering to make sure that New York City is working toward achieving Vision Zero. 

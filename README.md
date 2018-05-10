@@ -43,7 +43,7 @@ Our analysis will visualize the data to focus on the areas with respect to the i
 
 #### Accident count per year and per Borough: 
 Based on the Data Visualize using the collection used from NYC open data, dated on 2012 through 2018, which is more accurate information using based years of 2013-2017; to identify the development after the NYC implementation of Vision Zero in 2014. As result of the data collection, we comprehend that vision zero is making a slow base improvement in terms of lowering the total number of accidents per year and per-borough. As an outcome of the data visualization, we perceive that Brooklyn, Manhattan and followed by Queens, have the highest number of accidents; bearing in mind that these boroughs have more dense compare to both Bronx and Staten Island.  
-Finding and Mitigation: Brooklyn has the highest number of Accidents there must be a number mitigation measure: 
+**Finding and Mitigation:** Brooklyn has the highest number of Accidents there must be a number mitigation measure: 
 1.	Secure funding for continuous improvements that exceeds the 2024
 2.	Create more capital projects within the highest number of both injures and fatalities 
 3.	Conduct a monitoring plan of population growth in terms of street improvements 
@@ -51,8 +51,8 @@ Finding and Mitigation: Brooklyn has the highest number of Accidents there must 
 5.	Adopt new engineering method to improve street geometry 
  
 
-The total number of persons injured that includes all type of modes, as a result of Vision Zero we see the total number of the decrease by an approximate of 3000 injuries over the course of three years in Brooklyn, which has the highest number of person’s injuries followed by Queens and the results indicates an increase of the number injuries in the year of 2016. Followed by Manhattan, Bronx, and with the lowest number Staten Island      
-Finding and Outcome: 
+The total number of persons injured that includes all type of modes, as a result of Vision Zero we see the total number of the decrease by an approximate of 3000 injuries over the course of three years in Brooklyn, which has the highest number of person’s injuries followed by Queens and the results indicates an increase of the number injuries in the year of 2016. Followed by Manhattan, Bronx, and with the lowest number Staten Island.      
+**Finding and Outcome:**
 The analysis indicates that the need of focus on Brooklyn Borough is needed, where vision Zero is making a slow progress of decreasing the number of injuries over course of four years since the implementation of Vision Zero in 2014. To provide new mitigations, it is required an overview of the past procedure and regulation of implementing Vision Zero.  
 The Visualization guide to find the following mitigation measures:  
 1.	Vision Zero must include human error in both planning, engineering and enforcement 
@@ -63,14 +63,14 @@ The Visualization guide to find the following mitigation measures:
  
 
 The goal of Vision Zero is to have zero fatalities citywide, aimed to be reached by the year of 2024. Based on the Number of person killed and the outcome to vision zero there is a decrease of number of killed in the boroughs of Bronx, Manhattan, Queens, and Staten Island, with a clear understanding that each borough has different numbers of the total of killed. 
-Outcome and finding  
+**Outcome and finding:** 
 The outcome for Brooklyn after the implementation of Vision Zero maintain the same prior to the implementation of the Vision Zero, and did not include any improvements for years of 2014 and 2015 with a measure decrease in the year of 2016 and with an increase in the year of 2017. It will be necessary to update the mitigation measures to focus more on the following
 1.	Making sure that mobility is safe from the beginning, for example Brooklyn and Manhattan street infrastructure cannot handle the capacity of both vehicles and pedestrians; vision zero must be aware of that point, to find a result without comprise to traffic safety.
 2.	  Human error must be factored for example j-walking or midblock crossing must be factored in the enforcement also backseat seatbelt must be enforcement must be included. 
 
  
 The bar chart above shows the number of pedestrians injured before and after Vision Zero. In 2013, in the Bronx, the number of pedestrian injuries was about 1,700 pedestrians, It can be seen that the number of pedestrians injures in 2014 when Vision Zero was introduced, the numbers fell slightly from about 1,700 to 1,500 and from 2015 to 2016 the numbers were very similar to 2014 with a slight decrease having about 1,300 injuries. However, in 2017 the injuries have increased slightly reaching about 1,400 pedestrians. Brooklyn and Manhattan had the same trend where a slight decrease is shown, in 2013 it was about 3,800 and in 2014 it reached about 3,300 injuries and the trend follows for 2015, 2016 and 2017. However, in Queens the numbers of injuries fluctuate. In Staten Island, there is slight decrease of injuries after the introduction of Vision Zero. Overall, we can see a clear downward trend in the number of injuries after the introduction of Vision Zero throughout the five boroughs.    
-Outcomes and Finding 
+**Outcomes and Finding:**
 Finding and Mitigation: Brooklyn has the highest number of Accidents there must be a number mitigation measure: 
 
 1.	Making sure that mobility is safe from the beginning, for example Brooklyn and Manhattan street infrastructure cannot handle the capacity of both vehicles and pedestrians; vision zero must be aware of that point, to find a result without comprise to traffic safety. 

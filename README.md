@@ -86,7 +86,7 @@ Finding and Mitigation: Brooklyn has the highest number of Accidents there must 
 
  
 The number of pedestrians killed in the Bronx and Queens show a similar trend of having a decrease in number of pedestrians killed after the implementation of Vision Zero. However, in Manhattan and Brooklyn we see the numbers fluctuate not showing the outcome of Vision Zero. In Staten Island due to the very low of numbers of pedestrians killed there is no significant change.  
-Outcomes and Finding 
+**Outcomes and Finding**
 Finding and Mitigation: Brooklyn has the highest number of Accidents there must be a number mitigation measure: 
 1.	Implement new enforcements plan to the pedestrians with respect to the population growth and mindset/culture. For example, in Staten Island the mindset to walking is not very common as much as driving. 
 2.	  Human error must be factored for example j-walking or midblock crossing must be factored in the enforcement also backseat seatbelt must be enforcement must be included. 
@@ -97,7 +97,7 @@ Finding and Mitigation: Brooklyn has the highest number of Accidents there must 
 
 The bar chart illustrates the number of cyclists injured. In Bronx, Staten Island and Queens there is no significant change occurring after the implementation of Vision Zero. In Brooklyn, the numbers of cyclists injured fluctuates, where we cannot conclude the true effects of Vision Zero. Lastly, in Manhattan we see a slight decrease of cyclists injured. Based on the data collection, there is an improvement in the numbers of cyclist injuries, however, it seems the improvement is a slow progress over the period of four years.
 
-Outcomes and Finding 
+**Outcomes and Finding**
 Finding and Mitigation: Brooklyn has the highest number of Accidents there must be a number mitigation measure: 
 1.	Implement new enforcements plan to the cyclists, and issuing summons 
 2.	Secure funding safer bike routes citywide  
@@ -111,7 +111,7 @@ Finding and Mitigation: Brooklyn has the highest number of Accidents there must 
 
 The number of cyclist killed in the bar graph above does not show a pattern throughout the 5 boroughs. In the Bronx, there was an increase in the number of cyclist killed in 2015 after the introduction of Vision Zero and then it decreases in 2016 and increases again in 2017. In Manhattan and Queens, the numbers fluctuate, concluding the insignificance of vision Zero in regard to the number of cyclists killed. In Brooklyn, there is an increase of cyclists killed in 2016 and 2017. 
 
-Outcomes and Finding 
+**Outcomes and Finding**
 Finding and Mitigation: Brooklyn has the highest number of Accidents there must be a number mitigation measure: 
 1.	Human error must be factored for example j-walking or midblock crossing must be factored in the enforcement also backseat seatbelt must be enforcement must be included. 
 2.	Implement new enforcements plan to the cyclists, and issuing summons 
@@ -122,7 +122,7 @@ Finding and Mitigation: Brooklyn has the highest number of Accidents there must 
 
 
 Vision Zero mainly focus on regulating vehicles behavior, with Brooklyn having the highest number of motorist injures in Brooklyn followed by Queens. The results of Vision Zero in Brooklyn the numbers of Motorist injuries were lowered in the years of 2015 to 2017. Nonetheless, the numbers of injuries in Queens increased from 2015 to 2016, for this year Vision Zero was not effective. The results of this data collection indicates that Vision Zero was not adequate and the improvements measure did not make a big difference throughout the course of 
-Outcomes and Finding 
+**Outcomes and Finding**
 Finding and Mitigation: Brooklyn has the highest number of Accidents there must be a number mitigation measure: 
 
 1.	provide an updated survey of the increase of number of vehicles per-year and to provide new mitigation measures 
@@ -135,8 +135,8 @@ Finding and Mitigation: Brooklyn has the highest number of Accidents there must 
 
 
 The number of motorist killed indicates that Vision Zero is effective decrease as shown in the bar graph. The data collection show that Brooklyn followed by Queens with the highest number of Killed. However, for Queens there is no improvement for they years of 2014 and 2016. Vision Zero mainly focus on regulating vehicles behavior.    
-Outcomes and Finding 
-Finding and Mitigation: Brooklyn has the highest number of Accidents there must be a number mitigation measure: 
+**Outcomes and Finding**
+Finding and Mitigation: Brooklyn has the highest number of Accidents there must be a number mitigation measure:
 
 
 1.	provide an updated survey of the increase of number of vehicles per-year and to provide new mitigation measures 
